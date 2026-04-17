@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rideau Canal Monitoring Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rideau Canal Monitoring</h1>
+            <p>Real-time monitoring dashboard</p>
+        </header>
+
+        <main class="dashboard">
+            <div class="location-selector">
+                <label for="locationSelect">Select Location:</label>
+                <select id="locationSelect">
+                    <option value="location1">Dow's Lake</option>
+                    <option value="location2">Fifth Avenue</option>
+                    <option value="location3">NAC</option>
+                </select>
+            </div>
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Ice Thickness</h3>
+                    <p class="stat-value" id="iceThickness">-- m</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Surface Temperature</h3>
+                    <p class="stat-value" id="temperature">-- °C</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Snow Accumulation</h3>
+                    <p class="stat-value" id="snowAcc">-- cm</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Last Update</h3>
+                    <p class="stat-value" id="lastUpdate">--</p>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <h2>Monitoring Data</h2>
+                <div id="dataContainer"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Rideau Canal Monitoring System</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
