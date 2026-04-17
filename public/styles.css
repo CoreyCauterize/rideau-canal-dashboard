@@ -66,6 +66,51 @@ header::before {
     opacity: 0.3;
 }
 
+/* System Status */
+.system-status {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.status-label {
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-online {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.status-offline {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.last-refresh {
+    opacity: 0.8;
+    font-size: 0.875rem;
+}
+
 header h1 {
     font-size: 2.5rem;
     font-weight: 700;
@@ -88,16 +133,164 @@ header p {
     gap: 2rem;
 }
 
-/* Stats Grid */
-.stats-grid {
+/* Location Cards Grid */
+.locations-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
-.stat-card {
+.location-card {
     background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.location-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-color);
+}
+
+.location-header {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.location-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.safety-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.safety-badge.safe {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.safety-badge.warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.safety-badge.danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.sensor-data {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.data-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.data-item .label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.data-item .value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.last-update {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--background);
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.last-update small {
+    color: var(--text-light);
+    font-size: 0.75rem;
+}
+
+/* Charts Section */
+.charts-section {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    padding: 2rem;
+}
+
+.charts-section h2 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+}
+
+.charts-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--accent-color);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.chart-container {
+    background: var(--background);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    border: 1px solid var(--border);
+}
+
+.chart-container h3 {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.chart-container canvas {
+    max-height: 200px;
+    width: 100% !important;
+    height: auto !important;
+}
     padding: 1.5rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
@@ -215,21 +408,24 @@ footer {
         font-size: 1rem;
     }
     
-    .stats-grid {
+    .system-status {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .locations-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
     
-    .stat-card {
+    .sensor-data {
+        grid-template-columns: 1fr;
         padding: 1.25rem;
     }
     
-    .stat-value {
-        font-size: 1.75rem;
-    }
-    
-    .data-section {
-        padding: 1.5rem;
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .dashboard {
@@ -250,12 +446,19 @@ footer {
         font-size: 1.75rem;
     }
     
-    .stat-card {
+    .location-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .sensor-data {
         padding: 1rem;
     }
     
-    .stat-value {
-        font-size: 1.5rem;
+    .charts-section {
+        padding: 1rem;
     }
 }
 

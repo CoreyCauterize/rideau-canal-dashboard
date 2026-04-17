@@ -5,45 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rideau Canal Monitoring Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Rideau Canal Monitoring</h1>
             <p>Real-time monitoring dashboard</p>
+            <div class="system-status">
+                <span class="status-label">System Status:</span>
+                <span id="systemStatus" class="status-badge status-online">Online</span>
+                <span class="last-refresh">Last refresh: <span id="lastRefresh">--</span></span>
+            </div>
         </header>
 
         <main class="dashboard">
-            <div class="location-selector">
-                <label for="locationSelect">Select Location:</label>
-                <select id="locationSelect">
-                    <option value="location1">Dow's Lake</option>
-                    <option value="location2">Fifth Avenue</option>
-                    <option value="location3">NAC</option>
-                </select>
-            </div>
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <h3>Ice Thickness</h3>
-                    <p class="stat-value" id="iceThickness">-- m</p>
+            <!-- Location Cards Section -->
+            <section class="locations-grid">
+                <!-- Dow's Lake -->
+                <div class="location-card" data-location="Dow's Lake">
+                    <div class="location-header">
+                        <h3>Dow's Lake</h3>
+                        <span class="safety-badge" id="safety-dows-lake">SAFE</span>
+                    </div>
+                    <div class="sensor-data">
+                        <div class="data-item">
+                            <span class="label">Water Level:</span>
+                            <span class="value" id="waterLevel-dows-lake">-- m</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Temperature:</span>
+                            <span class="value" id="temperature-dows-lake">-- °C</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Flow Rate:</span>
+                            <span class="value" id="flowRate-dows-lake">-- m³/s</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Ice Thickness:</span>
+                            <span class="value" id="iceThickness-dows-lake">-- cm</span>
+                        </div>
+                    </div>
+                    <div class="last-update">
+                        <small id="lastUpdate-dows-lake">Last update: --</small>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Surface Temperature</h3>
-                    <p class="stat-value" id="temperature">-- °C</p>
+
+                <!-- Fifth Avenue -->
+                <div class="location-card" data-location="Fifth Avenue">
+                    <div class="location-header">
+                        <h3>Fifth Avenue</h3>
+                        <span class="safety-badge" id="safety-fifth-avenue">SAFE</span>
+                    </div>
+                    <div class="sensor-data">
+                        <div class="data-item">
+                            <span class="label">Water Level:</span>
+                            <span class="value" id="waterLevel-fifth-avenue">-- m</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Temperature:</span>
+                            <span class="value" id="temperature-fifth-avenue">-- °C</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Flow Rate:</span>
+                            <span class="value" id="flowRate-fifth-avenue">-- m³/s</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Ice Thickness:</span>
+                            <span class="value" id="iceThickness-fifth-avenue">-- cm</span>
+                        </div>
+                    </div>
+                    <div class="last-update">
+                        <small id="lastUpdate-fifth-avenue">Last update: --</small>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Snow Accumulation</h3>
-                    <p class="stat-value" id="snowAcc">-- cm</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Last Update</h3>
-                    <p class="stat-value" id="lastUpdate">--</p>
+
+                <!-- NAC -->
+                <div class="location-card" data-location="NAC">
+                    <div class="location-header">
+                        <h3>NAC (National Arts Centre)</h3>
+                        <span class="safety-badge" id="safety-nac">SAFE</span>
+                    </div>
+                    <div class="sensor-data">
+                        <div class="data-item">
+                            <span class="label">Water Level:</span>
+                            <span class="value" id="waterLevel-nac">-- m</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Temperature:</span>
+                            <span class="value" id="temperature-nac">-- °C</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Flow Rate:</span>
+                            <span class="value" id="flowRate-nac">-- m³/s</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="label">Ice Thickness:</span>
+                            <span class="value" id="iceThickness-nac">-- cm</span>
+                        </div>
+                    </div>
+                    <div class="last-update">
+                        <small id="lastUpdate-nac">Last update: --</small>
+                    </div>
                 </div>
             </section>
 
-            <section class="data-section">
-                <h2>Monitoring Data</h2>
-                <div id="dataContainer"></div>
+            <!-- Historical Trends Section -->
+            <section class="charts-section">
+                <h2>Historical Trends (Last Hour)</h2>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Water Level Trends</h3>
+                        <canvas id="waterLevelChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Temperature Trends</h3>
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Flow Rate Trends</h3>
+                        <canvas id="flowRateChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Ice Thickness Trends</h3>
+                        <canvas id="iceThicknessChart"></canvas>
+                    </div>
+                </div>
             </section>
         </main>
 
