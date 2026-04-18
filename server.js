@@ -21,18 +21,30 @@ app.get('/api/data', async (req, res) => {
     if (!location) {
         return res.status(400).json({ error: 'Location query parameter is required' });
     }
-    //non relational query to fetch data by location
+
     try {
-        const { database: db } = await cosmosClient.databases.createIfNotExists({ id: 'RideauCanalDB' });
-        const { container } = await db.containers.createIfNotExists({ id: 'DataContainer' });
+        const databaseId = process.env.COSMOS_DB_DATABASE || 'RideauCanalDB';
+        const containerId = process.env.COSMOS_DB_CONTAINER || 'SensorAggregations';
+
+        const db = cosmosClient.database(databaseId);
+        const container = db.container(containerId);
+
         const querySpec = {
-            query: 'SELECT * FROM c WHERE c.location = @location',
+            query: 'SELECT TOP 1 * FROM c WHERE c.location = @location ORDER BY c.timestamp DESC',
             parameters: [
                 { name: '@location', value: location }
             ]
         };
-        const { resources: items } = await container.items.query(querySpec).fetchAll();
-        res.json(items);
+
+        const { resources: items } = await container.items.query(querySpec, {
+            partitionKey: location
+        }).fetchAll();
+
+        if (!items || items.length === 0) {
+            return res.status(404).json({ error: `No data found for location '${location}'` });
+        }
+
+        res.json(items[0]);
     } catch (error) {
         console.error('Error fetching data from Cosmos DB:', error);
         res.status(500).json({ error: 'Internal Server Error' });

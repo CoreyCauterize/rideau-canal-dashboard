@@ -1,23 +1,21 @@
 // Dashboard Configuration
-const LOCATIONS = ['Dow\'s Lake', 'Fifth Avenue', 'NAC'];
+const LOCATIONS = [
+    { id: 'DowsLake', label: "Dow's Lake" },
+    { id: 'FifthAvenue', label: 'Fifth Avenue' },
+    { id: 'NAC', label: 'NAC' }
+];
 const REFRESH_INTERVAL = 30000; // 30 seconds
 const CHART_DATA_POINTS = 12; // Last hour (5-minute intervals)
 
 // Global variables for charts and data
 let charts = {};
 let historicalData = {
-    'Dow\'s Lake': { timestamps: [], waterLevel: [], temperature: [], flowRate: [], iceThickness: [] },
-    'Fifth Avenue': { timestamps: [], waterLevel: [], temperature: [], flowRate: [], iceThickness: [] },
-    'NAC': { timestamps: [], waterLevel: [], temperature: [], flowRate: [], iceThickness: [] }
+    DowsLake: { timestamps: [], surfaceTemperature: [], externalTemperature: [], iceThickness: [], snowAccumulation: [] },
+    FifthAvenue: { timestamps: [], surfaceTemperature: [], externalTemperature: [], iceThickness: [], snowAccumulation: [] },
+    NAC: { timestamps: [], surfaceTemperature: [], externalTemperature: [], iceThickness: [], snowAccumulation: [] }
 };
 
-// Safety thresholds
-const SAFETY_THRESHOLDS = {
-    waterLevel: { min: 2.0, max: 8.0 }, // meters
-    temperature: { min: -20, max: 35 }, // Celsius
-    flowRate: { min: 0.5, max: 5.0 }, // m³/s
-    iceThickness: { max: 50 } // cm
-};
+const LOCATION_ID_TO_LABEL = Object.fromEntries(LOCATIONS.map((loc) => [loc.id, loc.label]));
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
@@ -67,46 +65,46 @@ function initializeCharts() {
         }
     };
 
-    // Water Level Chart
-    charts.waterLevel = new Chart(document.getElementById('waterLevelChart'), {
+    // Surface Temperature Chart
+    charts.surfaceTemperature = new Chart(document.getElementById('surfaceTemperatureChart'), {
         type: 'line',
         data: {
             labels: [],
             datasets: [
-                { label: 'Dow\'s Lake', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+                { label: "Dow's Lake", data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
                 { label: 'Fifth Avenue', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
                 { label: 'NAC', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' }
             ]
         },
-        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Water Level (m)' } } } }
+        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Surface Temp (°C)' } } } }
     });
 
-    // Temperature Chart
-    charts.temperature = new Chart(document.getElementById('temperatureChart'), {
+    // External Temperature Chart
+    charts.externalTemperature = new Chart(document.getElementById('externalTemperatureChart'), {
         type: 'line',
         data: {
             labels: [],
             datasets: [
-                { label: 'Dow\'s Lake', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+                { label: "Dow's Lake", data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
                 { label: 'Fifth Avenue', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
                 { label: 'NAC', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' }
             ]
         },
-        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Temperature (°C)' } } } }
+        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'External Temp (°C)' } } } }
     });
 
-    // Flow Rate Chart
-    charts.flowRate = new Chart(document.getElementById('flowRateChart'), {
+    // Maximum Snow Accumulation Chart
+    charts.snowAccumulation = new Chart(document.getElementById('snowAccumulationChart'), {
         type: 'line',
         data: {
             labels: [],
             datasets: [
-                { label: 'Dow\'s Lake', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+                { label: "Dow's Lake", data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
                 { label: 'Fifth Avenue', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
                 { label: 'NAC', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' }
             ]
         },
-        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Flow Rate (m³/s)' } } } }
+        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Max Snow (cm)' } } } }
     });
 
     // Ice Thickness Chart
@@ -115,12 +113,12 @@ function initializeCharts() {
         data: {
             labels: [],
             datasets: [
-                { label: 'Dow\'s Lake', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+                { label: "Dow's Lake", data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' },
                 { label: 'Fifth Avenue', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
                 { label: 'NAC', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' }
             ]
         },
-        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Ice Thickness (cm)' } } } }
+        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, title: { display: true, text: 'Avg Ice Thickness (cm)' } } } }
     });
 }
 
@@ -128,7 +126,7 @@ function initializeCharts() {
 async function fetchAllLocationData() {
     setSystemStatus('loading');
     
-    const promises = LOCATIONS.map(location => fetchLocationData(location));
+    const promises = LOCATIONS.map((location) => fetchLocationData(location.id));
     
     try {
         const results = await Promise.allSettled(promises);
@@ -136,12 +134,12 @@ async function fetchAllLocationData() {
         
         results.forEach((result, index) => {
             if (result.status === 'fulfilled') {
-                updateLocationCard(LOCATIONS[index], result.value);
-                addToHistoricalData(LOCATIONS[index], result.value);
+                updateLocationCard(LOCATIONS[index].id, result.value);
+                addToHistoricalData(LOCATIONS[index].id, result.value);
                 successCount++;
             } else {
-                console.error(`Failed to fetch data for ${LOCATIONS[index]}:`, result.reason);
-                setLocationError(LOCATIONS[index]);
+                console.error(`Failed to fetch data for ${LOCATIONS[index].id}:`, result.reason);
+                setLocationError(LOCATIONS[index].id);
             }
         });
         
@@ -166,39 +164,38 @@ async function fetchAllLocationData() {
 // Fetch data for a specific location
 async function fetchLocationData(location) {
     const response = await fetch(`/api/data?location=${encodeURIComponent(location)}`);
-    
+
+    if (response.status === 404) {
+        return generateMockData(location);
+    }
+
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
-    // If no data returned, generate mock data for demo purposes
-    if (!data || data.length === 0) {
-        return generateMockData(location);
-    }
-    
-    // Return the latest data point
-    return data[data.length - 1];
+    return data;
 }
 
 // Generate mock data for demo purposes
 function generateMockData(location) {
     const baseValues = {
-        'Dow\'s Lake': { waterLevel: 4.2, temperature: 12, flowRate: 1.8, iceThickness: 15 },
-        'Fifth Avenue': { waterLevel: 4.5, temperature: 11, flowRate: 2.1, iceThickness: 12 },
-        'NAC': { waterLevel: 4.1, temperature: 13, flowRate: 1.9, iceThickness: 18 }
+        DowsLake: { avgIce: 75, surface: -3, external: -8, snow: 5, status: 'Safe' },
+        FifthAvenue: { avgIce: 72, surface: 1, external: -5, snow: 6, status: 'Unsafe' },
+        NAC: { avgIce: 78, surface: -1, external: -6, snow: 4, status: 'Caution' }
     };
-    
-    const base = baseValues[location] || baseValues['Dow\'s Lake'];
-    
+
+    const base = baseValues[location] || baseValues.DowsLake;
+
     return {
         id: `mock-${Date.now()}`,
         location: location,
-        waterLevel: (base.waterLevel + (Math.random() - 0.5) * 0.4).toFixed(2),
-        temperature: (base.temperature + (Math.random() - 0.5) * 4).toFixed(1),
-        flowRate: (base.flowRate + (Math.random() - 0.5) * 0.3).toFixed(2),
-        iceThickness: Math.max(0, (base.iceThickness + (Math.random() - 0.5) * 5)).toFixed(0),
+        averageIceThicknessCm: +(base.avgIce + (Math.random() - 0.5) * 6).toFixed(2),
+        averageSurfaceTemperatureC: +(base.surface + (Math.random() - 0.5) * 4).toFixed(2),
+        averageExternalTemperatureC: +(base.external + (Math.random() - 0.5) * 4).toFixed(2),
+        maximumSnowAccumulationCm: +(base.snow + (Math.random() - 0.5) * 2).toFixed(2),
+        readingCount: 30,
+        safetyStatus: base.status,
         timestamp: new Date().toISOString(),
         _ts: Math.floor(Date.now() / 1000)
     };
@@ -207,54 +204,39 @@ function generateMockData(location) {
 // Update location card with data
 function updateLocationCard(location, data) {
     const locationKey = location.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    
+
     // Update sensor values
-    document.getElementById(`waterLevel-${locationKey}`).textContent = `${data.waterLevel} m`;
-    document.getElementById(`temperature-${locationKey}`).textContent = `${data.temperature} °C`;
-    document.getElementById(`flowRate-${locationKey}`).textContent = `${data.flowRate} m³/s`;
-    document.getElementById(`iceThickness-${locationKey}`).textContent = `${data.iceThickness} cm`;
-    
+    document.getElementById(`surfaceTemperature-${locationKey}`).textContent = `${Number(data.averageSurfaceTemperatureC).toFixed(2)} °C`;
+    document.getElementById(`externalTemperature-${locationKey}`).textContent = `${Number(data.averageExternalTemperatureC).toFixed(2)} °C`;
+    document.getElementById(`snowAccumulation-${locationKey}`).textContent = `${Number(data.maximumSnowAccumulationCm).toFixed(2)} cm`;
+    document.getElementById(`iceThickness-${locationKey}`).textContent = `${Number(data.averageIceThicknessCm).toFixed(2)} cm`;
+
     // Update timestamp
     const timestamp = data.timestamp || new Date(data._ts * 1000).toISOString();
     document.getElementById(`lastUpdate-${locationKey}`).textContent = 
         `Last update: ${new Date(timestamp).toLocaleString()}`;
-    
+
     // Update safety badge
     updateSafetyBadge(location, data);
 }
 
-// Update safety badge based on sensor readings
+// Update safety badge based on stream safety status
 function updateSafetyBadge(location, data) {
     const locationKey = location.toLowerCase().replace(/[^a-z0-9]/g, '-');
     const safetyBadge = document.getElementById(`safety-${locationKey}`);
-    
-    let status = 'SAFE';
-    let statusClass = 'safe';
-    
-    // Check water level
-    if (data.waterLevel < SAFETY_THRESHOLDS.waterLevel.min || data.waterLevel > SAFETY_THRESHOLDS.waterLevel.max) {
-        status = 'WARNING';
+
+    const streamStatus = (data.safetyStatus || 'Unsafe').toLowerCase();
+    let status = 'UNSAFE';
+    let statusClass = 'danger';
+
+    if (streamStatus === 'safe') {
+        status = 'SAFE';
+        statusClass = 'safe';
+    } else if (streamStatus === 'caution') {
+        status = 'CAUTION';
         statusClass = 'warning';
     }
-    
-    // Check temperature (extreme conditions)
-    if (data.temperature < SAFETY_THRESHOLDS.temperature.min || data.temperature > SAFETY_THRESHOLDS.temperature.max) {
-        status = 'DANGER';
-        statusClass = 'danger';
-    }
-    
-    // Check flow rate
-    if (data.flowRate < SAFETY_THRESHOLDS.flowRate.min || data.flowRate > SAFETY_THRESHOLDS.flowRate.max) {
-        status = 'WARNING';
-        statusClass = 'warning';
-    }
-    
-    // Check ice thickness (dangerous if too thick)
-    if (data.iceThickness > SAFETY_THRESHOLDS.iceThickness.max) {
-        status = 'DANGER';
-        statusClass = 'danger';
-    }
-    
+
     safetyBadge.textContent = status;
     safetyBadge.className = `safety-badge ${statusClass}`;
 }
@@ -266,17 +248,17 @@ function addToHistoricalData(location, data) {
     
     // Add new data point
     locationData.timestamps.push(new Date(timestamp).toLocaleTimeString());
-    locationData.waterLevel.push(parseFloat(data.waterLevel));
-    locationData.temperature.push(parseFloat(data.temperature));
-    locationData.flowRate.push(parseFloat(data.flowRate));
-    locationData.iceThickness.push(parseFloat(data.iceThickness));
+    locationData.surfaceTemperature.push(parseFloat(data.averageSurfaceTemperatureC));
+    locationData.externalTemperature.push(parseFloat(data.averageExternalTemperatureC));
+    locationData.snowAccumulation.push(parseFloat(data.maximumSnowAccumulationCm));
+    locationData.iceThickness.push(parseFloat(data.averageIceThicknessCm));
     
     // Keep only last CHART_DATA_POINTS
     if (locationData.timestamps.length > CHART_DATA_POINTS) {
         locationData.timestamps.shift();
-        locationData.waterLevel.shift();
-        locationData.temperature.shift();
-        locationData.flowRate.shift();
+        locationData.surfaceTemperature.shift();
+        locationData.externalTemperature.shift();
+        locationData.snowAccumulation.shift();
         locationData.iceThickness.shift();
     }
 }
@@ -284,7 +266,7 @@ function addToHistoricalData(location, data) {
 // Update all charts with latest data
 function updateCharts() {
     // Get the latest timestamp array (they should all be the same)
-    const timestamps = historicalData[LOCATIONS[0]].timestamps;
+    const timestamps = historicalData[LOCATIONS[0].id].timestamps;
     
     // Update each chart
     Object.keys(charts).forEach(chartType => {
@@ -293,7 +275,7 @@ function updateCharts() {
         chart.data.labels = timestamps;
         
         LOCATIONS.forEach((location, index) => {
-            chart.data.datasets[index].data = historicalData[location][chartType] || [];
+            chart.data.datasets[index].data = historicalData[location.id][chartType] || [];
         });
         
         chart.update('none'); // Update without animation for real-time feel
@@ -332,10 +314,10 @@ function setSystemStatus(status) {
 // Set location card to error state
 function setLocationError(location) {
     const locationKey = location.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    
-    document.getElementById(`waterLevel-${locationKey}`).textContent = 'Error';
-    document.getElementById(`temperature-${locationKey}`).textContent = 'Error';
-    document.getElementById(`flowRate-${locationKey}`).textContent = 'Error';
+
+    document.getElementById(`surfaceTemperature-${locationKey}`).textContent = 'Error';
+    document.getElementById(`externalTemperature-${locationKey}`).textContent = 'Error';
+    document.getElementById(`snowAccumulation-${locationKey}`).textContent = 'Error';
     document.getElementById(`iceThickness-${locationKey}`).textContent = 'Error';
     document.getElementById(`lastUpdate-${locationKey}`).textContent = 'Connection failed';
     
