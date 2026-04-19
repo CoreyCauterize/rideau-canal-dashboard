@@ -1,5 +1,15 @@
 {
+  "name": "rideau-canal-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "build": "echo \"No build step configured (static files in ./public).\""
+  },
   "dependencies": {
+    "@azure/cosmos": "^4.5.0",
     "cors": "^2.8.6",
     "express": "^5.2.1"
   }
