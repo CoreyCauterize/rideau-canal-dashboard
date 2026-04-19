@@ -1,15 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import { CosmosClient } from "@azure/cosmos";
+import dotenv from 'dotenv';
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-const cosmosClient = new CosmosClient({
-    endpoint: process.env.COSMOS_DB_ENDPOINT,
-    key: process.env.COSMOS_DB_KEY
-});
+dotenv.config();
+const PORT = process.env.PORT || 3000;
+const COSMOS_DB_CONNECTION_STRING = process.env.COSMOS_DB_CONNECTION_STRING;
+
+const cosmosClient = new CosmosClient(COSMOS_DB_CONNECTION_STRING);
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -23,8 +25,8 @@ app.get('/api/data', async (req, res) => {
     }
 
     try {
-        const databaseId = process.env.COSMOS_DB_DATABASE || 'RideauCanalDB';
-        const containerId = process.env.COSMOS_DB_CONTAINER || 'SensorAggregations';
+        const databaseId = process.env.COSMOS_DB_DATABASE_NAME || 'RideauCanalDB';
+        const containerId = process.env.COSMOS_DB_CONTAINER_NAME || 'SensorAggregations';
 
         const db = cosmosClient.database(databaseId);
         const container = db.container(containerId);
@@ -51,8 +53,8 @@ app.get('/api/data', async (req, res) => {
     }
 });
     
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`server address is http://localhost:${PORT}`);
 });
 
