@@ -1,16 +1,1 @@
-{
-  "name": "rideau-canal-dashboard",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "node --watch server.js",
-    "start": "node server.js",
-    "build": "echo \"No build step configured (static files in ./public).\""
-  },
-  "dependencies": {
-    "@azure/cosmos": "^4.5.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
-  }
-}
+{\n  "type": "module",\n  "engines": {\n    "node": ">=20"\n  },\n  "scripts": {\n    "start": "node index.js",\n    "dev": "nodemon index.js",\n    "build": "webpack"\n  },\n  "dependencies": {\n    // existing dependencies will be preserved here\n  }\n}
